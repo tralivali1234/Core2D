@@ -1,46 +1,22 @@
-version: 0.1.{build}
-skip_tags: true
-os: Visual Studio 2015
-configuration:
-- Debug
-- Release
+version: '{build}'
+image: Visual Studio 2017
+skip_branch_with_pr: true
+environment:
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+  DOTNET_CLI_TELEMETRY_OPTOUT: 1
+configuration: Release
+platform: AnyCPU
 before_build:
-- cmd: >-
-    git submodule update --init
-
-    appveyor DownloadFile https://dist.nuget.org/win-x86-commandline/latest/nuget.exe
-
-    restore.cmd
-build:
-  project: Core2D.sln
-  verbosity: minimal
-after_build:
-- cmd: >-
-    7z a Core2D-%CONFIGURATION%-%APPVEYOR_BUILD_VERSION%.zip %APPVEYOR_BUILD_FOLDER%\Core2D\bin\%CONFIGURATION%\*
-
-    7z a Core2D.Perspex-%CONFIGURATION%-%APPVEYOR_BUILD_VERSION%.zip %APPVEYOR_BUILD_FOLDER%\Core2D.Perspex\bin\%CONFIGURATION%\*
-
-    7z a Core2D.Wpf-%CONFIGURATION%-%APPVEYOR_BUILD_VERSION%.zip %APPVEYOR_BUILD_FOLDER%\Core2D.Wpf\bin\%CONFIGURATION%\*
-
-    appveyor PushArtifact Core2D-%CONFIGURATION%-%APPVEYOR_BUILD_VERSION%.zip
-
-    appveyor PushArtifact Core2D.Perspex-%CONFIGURATION%-%APPVEYOR_BUILD_VERSION%.zip
-
-    appveyor PushArtifact Core2D.Wpf-%CONFIGURATION%-%APPVEYOR_BUILD_VERSION%.zip
+- cmd: git submodule update --init
+build_script:
+- ps: .\build.ps1 -Target "AppVeyor" -Platform $env:platform -Configuration $env:configuration
 test: off
-deploy:
-- provider: GitHub
-  tag: $(appveyor_build_version)
-  release: $(appveyor_build_version)
-  auth_token:
-    secure: 6jHUhHqAmyx5NOZWctCi0A72lGgaGxhT5tRWnBNMz1JYHOgg1PEID1DFEG1jiQeO
-  artifact: /.*\.zip/
-  prerelease: true
-  on:
-    branch: master
 notifications:
 - provider: Webhook
-  url: https://webhooks.gitter.im/e/cc9eb0e869ca5a539718
+  url: https://webhooks.gitter.im/e/1ff736226b47ccf79930
   on_build_success: true
   on_build_failure: true
   on_build_status_changed: true
+artifacts:
+  - path: artifacts\test-results\*.xml
+  - path: artifacts\zip\*.zip

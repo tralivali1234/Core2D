@@ -1,70 +1,142 @@
 # Core2D
 
-[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/Core2D/Core2D?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+[![Gitter](https://badges.gitter.im/wieslawsoltes/Core2D.svg)](https://gitter.im/wieslawsoltes/Core2D?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 [![Build status](https://ci.appveyor.com/api/projects/status/7k1e0voeit7od9bw/branch/master?svg=true)](https://ci.appveyor.com/project/wieslawsoltes/core2d/branch/master)
+[![Build Status](https://travis-ci.org/wieslawsoltes/Core2D.svg?branch=master)](https://travis-ci.org/wieslawsoltes/Core2D)
+[![CircleCI](https://circleci.com/gh/wieslawsoltes/Core2D/tree/master.svg?style=svg)](https://circleci.com/gh/wieslawsoltes/Core2D/tree/master)
 
-Data driven 2D diagram editor.
+[![CodeFactor](https://www.codefactor.io/repository/github/wieslawsoltes/core2d/badge)](https://www.codefactor.io/repository/github/wieslawsoltes/core2d)
+
+A multi-platform data driven 2D diagram editor.
 
 ## About
 
-Core2D is an application for making data driven 2D diagrams.
+Core2D is a multi-platform application for making data driven 2D diagrams.
+
+## Data Formats
+
+* The project models is stored as `Json` in `zip` archive.
+* The project images are stored  as files in `zip` archive.
+* Resources are defined as `Json` or `Xaml`.
+* The `Json` format is supported for imported and exported resources. 
+* The `Xaml` format is supported for imported and exported resources. 
+* Database records are imported, exported and updated as `csv`.
+* The clipboard data is stored as `Json` string.
+
+## Supported Platforms
+
+* `Windows 7 SP1 or higher` using `Core2D.Wpf` or `Core2D.Avalonia` project.
+* `Linux` using `Core2D.Avalonia` project.
+* `macOS` using `Core2D.Avalonia` project.
+* `.NET Core` supported platforms using `Core2D.Avalonia` project.
+
+The core libraries are portable and should work on all platforms where C# is supported.
 
 ## Building Core2D
 
-* [Visual Studio Community 2015](https://www.visualstudio.com/en-us/products/visual-studio-community-vs.aspx) for Windows builds.
-* [SharpDevelop](http://www.icsharpcode.net/OpenSource/SD/Download/#SharpDevelop5x) for Windows builds.
-* [MonoDevelop](http://www.monodevelop.com/) for Linux builds.
+First, clone the repository or download the latest zip.
+```
+git clone https://github.com/wieslawsoltes/Core2D.git
+git submodule update --init --recursive
+```
 
-### Supported Platforms
+### Build using IDE
 
-* Windows 7/8/8.1/10 for `Core2D.Wpf` and `Core2D.Perspex` builds.
-* XUbuntu 15.10 for `Core2D.Perspex` build.
+* [Visual Studio Community 2017](https://www.visualstudio.com/pl/vs/community/) for `Windows` builds.
 
-The core library and editor are portable and should work on all platforms where C# is supported. For basic usage of `Core2D` library see sample project `Core2D.Sample`.
+Open `Core2D.sln` in selected IDE and run `Build` command.
 
-### NuGet Packages
+### Build on Windows using script
 
-* Common
-  * System.Collections.Immutable
-  * Newtonsoft.Json
-  * CsvHelper
-  * netdxf (Currently using git submodule as NuGet version is outdated.)
-* WPF
-  * PDFsharp-wpf (`PDFsharp` core does not implement `XGraphicsPath.AddArc` method.)
-  * Xceed.Wpf.AvalonDock
-  * Xceed.Products.Wpf.Toolkit.AvalonDock
-  * System.Windows.Interactivity.WPF
-* Perspex
-  * PDFsharp (`PDFsharp` core for `Perspex` non-windows builds.)
-  * Perspex
-  * Perspex.Desktop
-  * Perspex.Skia.Desktop
-  * Rx-Core
-  * Rx-Interfaces
-  * Rx-Linq
-  * Rx-Main
-  * Rx-PlatformServices
-  * Serilog
-  * SharpDX
-  * SharpDX.Direct2D1
-  * SharpDX.DXGI
-  * Splat
-  * Sprache
+Open up a Powershell prompt and execute the bootstrapper script:
+```PowerShell
+PS> .\build.ps1 -Target "Default" -Platform "AnyCPU" -Configuration "Release"
+```
 
-### NuGet Package Sources
+### Build on Linux/OSX using script
 
-* https://www.nuget.org/api/v2/
-* https://www.myget.org/F/perspex-nightly/api/v2
+Open up a terminal prompt and execute the bootstrapper script:
+```Bash
+$ ./build.sh --target "Default" --platform "AnyCPU" --configuration "Release"
+```
+### Build using .NET Core
 
-### Other Dependencies
+* [.NET Core](https://www.microsoft.com/net/download/core) for `Windows`, `Linux` and `macOS` builds.
 
-* [.net dxf Reader-Writer](http://netdxf.codeplex.com/) Run `git submodule update --init` in project directory.
-* [GTK# for .NET](http://www.mono-project.com/download/#download-win) Needed for Gtk on Windows.
+Open up a Powershell prompt and execute:
+```PowerShell
+cd apps/Core2D.Avalonia
+dotnet restore
+dotnet build
+```
 
-## Contact
+Open up a terminal prompt and execute:
+```Bash
+cd apps/Core2D.Avalonia
+dotnet restore
+dotnet build
+```
 
-https://github.com/Core2D/Core2D
+### Publishing self-contained .NET Core application
+
+You can publish self-contained `Core2D` application and all of its dependencies for one of the [.NET Core supported runtimes](https://docs.microsoft.com/en-us/dotnet/articles/core/rid-catalog). Below are few command-line examples.
+
+Open up a Powershell prompt and execute:
+```PowerShell
+cd apps/Core2D.Avalonia
+dotnet restore
+dotnet publish -r win7-x64 -o win7-x64
+```
+
+Open up a Powershell prompt and execute:
+```PowerShell
+cd apps/Core2D.Avalonia
+dotnet restore
+dotnet publish -r win7-x86 -o win7-x86
+```
+
+Open up a terminal prompt and execute:
+```Bash
+cd apps/Core2D.Avalonia
+dotnet restore
+dotnet publish -r ubuntu.16.10-x64 -o ubuntu.16.10-x64
+```
+
+## Package Sources
+
+* https://api.nuget.org/v3/index.json
+* https://www.myget.org/F/avalonia-ci/api/v2
+* https://www.myget.org/F/xamlbehaviors-nightly/api/v2
+* https://www.myget.org/F/panandzoom-nightly/api/v2
+* https://ci.appveyor.com/nuget/portable-xaml
+
+## SkiaSharp
+
+The `libSkiaSharp.dll` from SkiaSharp package requires [Microsoft Visual C++ 2015 Redistributable](https://www.microsoft.com/en-us/download/details.aspx?id=52982) installed or included as part of distribution. License terms for redistributable
+[MICROSOFT SOFTWARE LICENSE TERMS, MICROSOFT VISUAL STUDIO COMMUNITY 2015](https://www.visualstudio.com/en-us/support/legal/mt171547) and information about [Distributable Code for Microsoft Visual Studio 2015](https://www.visualstudio.com/en-us/downloads/2015-redistribution-vs.aspx).
+
+### Required Visual C++ Runtime Files
+
+Projects referencing `SkiaSharp` require `Visual C++ Runtime Files` from `Visual Studio Community 2017`.
+
+#### x86 Platform
+
+```
+c:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Redist\MSVC\14.10.25008\x86\Microsoft.VC150.CRT\msvcp140.dll
+c:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Redist\MSVC\14.10.25008\x86\Microsoft.VC150.CRT\vcruntime140.dll
+```
+
+#### x64 Platform
+
+```
+c:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Redist\MSVC\14.10.25008\x64\Microsoft.VC150.CRT\msvcp140.dll
+c:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Redist\MSVC\14.10.25008\x64\Microsoft.VC150.CRT\vcruntime140.dll
+```
+
+## Resources
+
+* [GitHub source code repository.](https://github.com/wieslawsoltes/Core2D)
 
 ## License
 
